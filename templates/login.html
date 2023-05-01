@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+  
+</head>
+<body>
+	<div class="login">
+		<div class="login-screen">
+			<div class="app-title">
+				<h1>Login</h1>
+			</div>
+
+			<div class="login-form">
+                     <form method="POST" id="form-login" >
+				    <div class="control-group">
+                    <input type="text"  name="username" class="login-field" value="" placeholder="username" id="login-name">
+				    <label class="login-field-icon fui-user" for="login-name"></label>
+				    </div>
+
+				     <div class="control-group">
+				    <input type="password"  name="password" class="login-field" value="" placeholder="password" id="login-pass">
+				     <label class="login-field-icon fui-lock" for="login-pass"></label>
+				     </div>
+
+                    <button type="submit" class="btn btn-primary" onclick="Validar()">login</button>
+				   <a class="login-link" href="#">Lost your password?</a>
+                     
+                    
+                    </form>				
+			</div class="message">
+            {% if error_message %}
+            <p style="color:red;">{{ error_message }}</p>
+           {% endif %}
+		</div>
+	</div>
+    <script>
+
+        const form = document.getElementById("form-login");
+
+    form.addEventListener("submit", function(event) {
+        const username = document.getElementById("login-name").value;
+        const password = document.getElementById("login-pass").value;
+
+        if (username.length < 3 || password.length < 6) {
+            event.preventDefault(); // Evita que se envíe el formulario
+            alert("El usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres.");
+        } else if (!password.match(/[a-zA-Z]/) || !password.match(/[0-9]/)) {
+            event.preventDefault(); // Evita que se envíe el formulario
+            alert("La contraseña debe contener letras y números.");
+        }
+    });
+
+
+
+    </script>
+</body>
+
+</html>
+
+

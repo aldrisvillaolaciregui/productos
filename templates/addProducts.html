@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+
+
+<link rel="stylesheet" href="/static/css/addProduct.css">
+<style>
+    .mensaje {
+        display: none;
+    }
+
+    .mensaje.mostrar {
+        display: block;
+    }
+</style>
+
+{% block content %}
+
+
+
+<link rel="stylesheet" href="/static/css/addProduct.css">
+ 
+<form method="POST" class="formulario">
+    <input type="number" name="cod_product" placeholder="codigo del producto"><br>
+    <select  name="id_category" id="category">
+        {% for categoria  in categorias  %}
+    
+        <option value={{categoria}}>{{categoria}}</option>
+     
+        {% endfor %}
+        
+
+    </select><br>
+    <input type="text" name="nameProduct" placeholder="nombre del producto"><br>
+    <input type="text" name="description" placeholder="descripcion"><br>
+    <input type="number" name="price_purchase" placeholder="precio de compro"><br>
+    <input type="number" name="price_sale" placeholder="precio de venta"><br>
+    <input type="number" name="stock" placeholder="stock"><br>
+    <button type="submit" id="addproduct" onclick="EnviarMensaje()">Agregar Producto</button>
+</form>
+
+<div id="mensaje">
+
+</div>
+
+
+<script>
+
+    function EnviarMensaje(){
+        document.getElementById("mensaje").innerHTML='<div class="alert alert-primary" role="alert">Producto agregado con exito</div>';
+        setTimeout(function() {
+            document.getElementById("mensaje").innerHTML='';
+        }, 50000000); // 5000 milisegundos = 5 segundos
+    }
+    
+    document.getElementById("addproduct").addEventListener("click", function(event){
+        event.preventDefault(); // Evita que se envíe el formulario por defecto
+        EnviarMensaje();
+        document.querySelector("form").submit();
+    });
+    
+
+
+</script>
+
+{% endblock content %}
+

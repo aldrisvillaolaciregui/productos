@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+
+<h3>Aqui agregamos las categorias</h3>
+
+
+<form method="POST" action="/addCategory">
+    <input type="text" name="name_category" id="name_category" placeholder="Categoria"><br>
+     <button type="submit">Agregar categoria</button>
+   
+</form>
+
+<ul>
+    {% for categoria in categorias %}
+      
+     <li>{{categoria}}</li>
+
+    {% endfor %}
+</ul>
+
+
+
+
+
+{% endblock content %}

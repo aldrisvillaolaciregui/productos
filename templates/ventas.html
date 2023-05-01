@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<label for="productos">Producto:</label>
+<input type="text" id="productos" name="productos">
+
+<script>
+    $(document).ready(function() {
+        // Configuración del input con autocompletado
+        $("#productos").autocomplete({
+            source: "/productos?term=",  // Ruta que devuelve la lista de productos en formato JSON
+            minLength: 2  // Número mínimo de caracteres a ingresar antes de activar la búsqueda
+        });
+    });
+</script>
+{% endblock content %}
