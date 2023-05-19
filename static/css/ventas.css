@@ -1,0 +1,74 @@
+#showScroll {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "VT323", monospace;
+    color: #1f1f1f;
+  }
+  
+  
+  .bold {
+    font-weight: bold;
+  }
+  
+  .center {
+    text-align: center;
+  }
+  
+  .receipt {
+    width: 350px;
+    min-height: 70vh;
+    height: 100%;
+    background: #fff;
+    margin: 0 auto;
+    box-shadow: 5px 5px 19px #ccc;
+    padding: 10px;
+  }
+  
+  .logo {
+    text-align: center;
+    padding: 20px;
+    size: 5px ;
+  }
+  
+  .barcode {
+    font-family: "Libre Barcode 128", cursive;
+    font-size: 42px;
+    text-align: center;
+  }
+  
+  .address {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .transactionDetails {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px 10px;
+  }
+  .transactionDetails .detail {
+    text-transform: uppercase;
+  }
+  
+  .centerItem {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  
+  .survey {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .survey .surveyID {
+    font-size: 20px;
+  }
+  
+  .paymentDetails {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 150px;
+  }
+
+  

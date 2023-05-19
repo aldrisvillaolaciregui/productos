@@ -1,20 +1,190 @@
-{% extends 'index.html' %}
+{% extends 'index.html' %} {% block content %}
 
-{% block content %}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="/static/css/ventas.css">
+<link
+  rel="stylesheet"
+  href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+/>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<label for="productos">Producto:</label>
-<input type="text" id="productos" name="productos">
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <input
+          type="text"
+          id="nombre_producto"
+          name="nombre_producto"
+          placeholder="Nombre del producto"
+        /><br />
+        <input
+          type="number"
+          id="cantidad_producto"
+          placeholder="Cantidad"
+        /><br />
+        <input type="number" id="precio_producto" placeholder="Precio" /><br />
+        <button
+          class="btn btn-primary"
+          type="button"
+          onclick="agregarProducto()"
+        >
+          Agregar
+        </button>
+        <button
+          class="btn btn-success"
+          type="button"
+          onclick="enviarProductos()">Terminar
+        </button>
 
-<script>
-    $(document).ready(function() {
-        // Configuración del input con autocompletado
-        $("#productos").autocomplete({
-            source: "/productos?term=",  // Ruta que devuelve la lista de productos en formato JSON
-            minLength: 2  // Número mínimo de caracteres a ingresar antes de activar la búsqueda
-        });
+        <table id="tablaProductos">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="col-sm-6">
+
+        
+      <div id="showScroll" class="container">
+        <div class="receipt">
+          <h1 class="logo">System/aldris</h1>
+          <div class="address">000 Mobile tech. Panama, PTY</div>
+
+          <div class="transactionDetails">factura:</div>
+          <div class="centerItem bold">
+            <div class="item">Card #: ********1875</div>
+          </div>
+          
+          <table id="tablaProductos">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="survey bold">
+            <p>Survey ID #</p>
+            <p class="surveyID">6588 4755 3256 544 21</p>
+          </div>
+          <div id="totales">
+            <label>Productos agregados:</label>
+            <label id="num_productos">0</label><br />
+            <label>Precio total sin impuesto</label>
+            <label id="precioSinIm">$0.00</label><br />
+            <label>Precio total con impuestos:</label>
+            <label id="precio_total">$0.00</label>
+          </div>
+          <div class="paymentDetails">
+            <div class="detail">************4023</div>
+            <div class="detail">CH</div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      // Configuración del input con autocompletado
+      $("#nombre_producto").autocomplete({
+        source: "/productos?term=", // Ruta que devuelve la lista de productos en formato JSON
+        minLength: 2, // Número mínimo de caracteres a ingresar antes de activar la búsqueda
+      });
     });
-</script>
-{% endblock content %}
+
+    let productos = [];
+
+    function agregarProducto() {
+      const nombre = document.getElementById("nombre_producto").value;
+      const cantidad = parseInt(
+        document.getElementById("cantidad_producto").value
+      );
+      const precio = parseFloat(
+        document.getElementById("precio_producto").value
+      );
+
+      if (nombre !== "" && !isNaN(cantidad) && !isNaN(precio)) {
+        const producto = {
+          nombre_producto: nombre,
+          cantidad_producto: cantidad,
+          precio_producto: precio,
+        };
+        productos.push(producto);
+        console.log(productos)
+        const tabla = document
+          .getElementById("tablaProductos")
+          .getElementsByTagName("tbody")[0];
+        const nuevaFila = tabla.insertRow();
+        const celdaNombre = nuevaFila.insertCell(0);
+        const celdaCantidad = nuevaFila.insertCell(1);
+        const celdaPrecio = nuevaFila.insertCell(2);
+
+        celdaNombre.textContent = nombre;
+        celdaCantidad.textContent = cantidad;
+        celdaPrecio.textContent = precio;
+
+        document.getElementById("nombre_producto").value = "";
+        document.getElementById("cantidad_producto").value = "";
+        document.getElementById("precio_producto").value = "";
+
+        const num_productos = document.getElementById("num_productos");
+        num_productos.textContent = productos.length;
+
+        const precio_total = document.getElementById("precio_total");
+        const precio_sin_imp = document.getElementById("precioSinIm");
+        const precio_sin_impuestos = productos.reduce(
+          (total, producto) =>
+            total + producto.cantidad_producto * producto.precio_producto,
+          0
+        );
+        const precio_con_impuestos = precio_sin_impuestos * 1.07;
+        precio_sin_imp.textContent = `$${precio_sin_impuestos.toFixed(2)}`;
+        precio_total.textContent = `$${precio_con_impuestos.toFixed(2)}`;
+      }
+    }
+
+    function enviarProductos() {
+      // Aquí enviar los datos al backend
+      if (productos.length > 0) {
+        fetch('/productos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productos)
+        })
+        .then(response => {
+            // Aquí puedes hacer algo con la respuesta del backend
+        })
+        .catch(error => {
+            // Aquí puedes manejar el error en caso de que falle la petición
+        });
+    }
+      // ...
+      console.log(productos);
+
+      // Limpiar la tabla y el arreglo de productos
+      productos = [];
+      document
+        .getElementById("tablaProductos")
+        .getElementsByTagName("tbody")[0].innerHTML = "";
+      document.getElementById("num_productos").textContent = "0";
+      document.getElementById("precioSinIm").textContent = "0";
+
+      document.getElementById("precio_total").textContent = "$0.00";
+    }
+  </script>
+  {% endblock content %}
+</body>

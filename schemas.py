@@ -26,6 +26,12 @@ class ventaBasemodel(BaseModel):
 class usernameBasemodel(BaseModel):
     username: str
     password: str
+    
+class productoSales(BaseModel):
+    nombre : str
+    cantidad:int
+    precio : float
+    
    
     
     

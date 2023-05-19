@@ -2,6 +2,7 @@ from fastapi import FastAPI,Request,Form,HTTPException
 from fastapi.responses import HTMLResponse,JSONResponse,RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from database import db,Product,Category,Sale,Username
 
@@ -11,11 +12,15 @@ from datetime import date
 from schemas import productBasemodel
 from schemas import categoryBasemodel
 from schemas import usernameBasemodel
+from schemas import productoSales
 
 
 
 
 app = FastAPI()
+
+
+
 templates=Jinja2Templates(directory="templates")
 
 app.mount("/static",StaticFiles(directory="static"),name="static")
@@ -30,7 +35,10 @@ def startup():
 
 @app.get("/",response_class=HTMLResponse)
 async def login(request:Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    username=request.cookies.get("user")
+    if not username:
+         return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/")
@@ -42,14 +50,12 @@ async def login(request:Request, username:str=Form(...), password:str=Form(...))
     cursor.execute(query,values)
     users=cursor.fetchone()
     print(users)
-    print(username)
-    error_message="Credenciales invalidas"
-    if users is None or password != users[0]:
+    if (users is None or password != users[0]) :
+       error_message="Credenciales invalidas"
        return templates.TemplateResponse("login.html",{"request":request, "error_message":error_message})
-    else:
-        response=RedirectResponse(url="/index")
-        response.set_cookie(key="user",value=username)
-        return response
+    response=RedirectResponse(url="/index")
+    response.set_cookie(key="user",value=username)
+    return response
 
 
 @app.post("/index")
@@ -58,24 +64,35 @@ async def index(request:Request):
     print(username)
     if not username:
         return RedirectResponse(url="/")
-    return templates.TemplateResponse("index.html", {"request": request})
-
-
+    return templates.TemplateResponse("index.html", {"request": request, "user":username})
 
 @app.get("/index")
-async def get_index(request:Request):
+async def index(request:Request):
     username=request.cookies.get("user")
-    print(username)
     if not username:
         return RedirectResponse(url="/")
-    return templates.TemplateResponse("index.html", {"request": request})
-
-    
-    
-    
-    
+    return templates.TemplateResponse("index.html", {"request": request, "user":username})
 
 
+
+
+@app.get("/logout")
+async def logout(request: Request):
+    response = RedirectResponse(url="/")
+    response.delete_cookie("user")
+    return response
+
+@app.post("/logout")
+async def logout(request: Request):
+    response = RedirectResponse(url="/")
+    response.delete_cookie("user")
+    return response
+
+#fin de login
+    
+    
+
+#productos
 
 @app.get('/listaProducto',response_class=HTMLResponse)
 async def listaProducto(request: Request):
@@ -94,11 +111,7 @@ async def addproducto(request:Request):
     categorias=cursor.fetchall()
     #comprensión de lista
     categorias= [categoria[0] for categoria in categorias]
-    return templates.TemplateResponse("addProducts.html", {"request": request, "categorias":categorias,"mensaje":''
-                                                           })
-
-   
-    
+    return templates.TemplateResponse("addProducts.html", {"request": request, "categorias":categorias,"mensaje":''})
     
 
 
@@ -110,13 +123,16 @@ async def addProducts(request:Request,cod_product:int=Form(...), id_category:str
     print(producto.id_category)
     query="SELECT id_category FROM Categorias where name_category=?"
     values=(producto.id_category,)
+    print(query,values)
     cursor.execute(query,values)
     options=cursor.fetchall()
     options=[option[0] for  option in options]
     query2="INSERT INTO Productos (cod_product,id_category_id,nameProduct,description, price_purchase, price_sale, stock,date_creation) VALUES (?,?,?,?,?,?,?,DATE(CURRENT_TIMESTAMP))"
     values2=(producto.cod_product,options[0],producto.nameProdcut, producto.description, producto.price_purchase, producto.price_sale, producto.stock,)
     cursor.execute(query2,values2)
+    print(query2,values2)
     db.commit()
+    return  templates.TemplateResponse("addProducts.html", {"request": request})
     
     #despues de dar input se vuelva a rellenar el boton de opciones
     
@@ -126,7 +142,7 @@ sqlite3.OperationalError: incomplete input
    el error quiere decir problema de si
 
     """
-    return RedirectResponse(url="/addProducts")    
+     
 
 
 @app.get('/addCategory',response_class=HTMLResponse)
@@ -143,7 +159,6 @@ async def addCategory(request:Request,name_category:str=Form(...)):
     query="INSERT INTO Categorias (name_Category,date_creation) VALUES ( ?,DATE(CURRENT_TIMESTAMP))"
     values=(category.name_category,)
     cursor.execute(query,values)
-    print(cursor)
     
     cursor.execute("SELECT * FROM categorias")
     categorias=cursor.fetchall()
@@ -164,7 +179,16 @@ async def get_productos(request:Request,term: str):
     productos=[producto[2] for producto in productos]
     return JSONResponse(content=productos)
 
+@app.post("/productos")
+async def recibir_productos(request:Request, nombre: str=Form(...), cantidad: int=Form(...), precio: float=Form(...)):
+    productos=productoSales(nombre=nombre, cantidad=cantidad, precio=precio)
+    
+    print(productos)
+    
+    
+    # ...
 
+    return {"message": "Productos recibidos"}
 
 
   

@@ -1,13 +1,17 @@
 {% extends 'index.html' %}
-
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
 {% block content %}
 <link rel="stylesheet" href="/static/css/listaProducto.css">
 
 <h3>Aqui van la lista de los Productos</h3>
+ 
+<div>
+    <label for="busqueda">Buscar:</label>
+    <input type="text" id="busqueda" />
+</div>
 
-
-
-<table>
+<table id="datatable">
    <thead>
        <tr>
            <th>Codigo</th>
@@ -19,35 +23,45 @@
            <th>Stok</th>
            <th>Fecha de creacion</th>
            <th>Acciones</th>
-
        </tr>
    </thead>
    <tbody>
       
-           {%for registro in registros%}
-                   <tr>
-                       <td>{{registro[0]}} </td>
-                       <td>{{registro[1]}} </td>
-                       <td>{{registro[2]}} </td>
-                       <td>{{registro[3]}} </td>
-                       <td>{{registro[4]}} </td>
-                       <td>{{registro[5]}} </td>
-                       <td>{{registro[6]}} </td>
-                       <td>{{registro[7]}} </td>
-                       <td>{{registro[8]}} </td>
-                       <td>
-                        <form method="post" action="/eliminarProducto/{{registro[0]}}">
-                           <button type="submit">Eliminar</button>
-                       </form>
-                       <form method="get" action="/editarProducto/{{registro[0]}}">
-                           <button type="submit">Editar</button>
-                       </form>
+       {% for registro in registros %}
+           <tr>
+               <td>{{registro[0]}} </td>
+               <td>{{registro[1]}} </td>
+               <td>{{registro[2]}} </td>
+               <td>{{registro[3]}} </td>
+               <td>{{registro[4]}} </td>
+               <td>{{registro[5]}} </td>
+               <td>{{registro[6]}} </td>
+               <td>{{registro[7]}} </td>
+               <td>{{registro[8]}} </td>
+               <td>
+                   <form method="post" action="/eliminarProducto/{{registro[0]}}">
+                       <button type="submit">Eliminar</button>
+                   </form>
+                   <form method="get" action="/editarProducto/{{registro[0]}}">
+                       <button type="submit">Editar</button>
+                   </form>
+               </td>                     
+           </tr>
+       {% endfor %}
+   </tbody>
+</table>
 
-                       </td>
-                      
-                   </tr>
-           {%endfor%}
+<script>
+    var miTabla = new simpleDatatables.DataTable("#datatable", {
+        searchable: true, // habilitar búsqueda
+        paging: true, // habilitar paginación
+        pageLength: 10 // mostrar 10 filas por página
+    });
 
-      
+    // agregar un manejador de eventos para el campo de búsqueda
+    document.querySelector("#busqueda").addEventListener("keyup", function() {
+        miTabla.search(this.value); // buscar el valor ingresado
+    });
+</script>
 
 {% endblock content %}

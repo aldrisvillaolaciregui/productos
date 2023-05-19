@@ -1,28 +1,101 @@
-<div id='sidebar'>
-    <aside >
-        <p> Menu </p>
-        <a href="/listaProducto">
-          <i class="fa fa-user-o" aria-hidden="true"></i>
-          Lista de Productos
-        </a>
-        <a href="/addProducts">
-          <i class="fa fa-laptop" aria-hidden="true"></i>
-          Agregar Productos
-        </a>
-        <a href="/addCategory">
-          <i class="fa fa-clone" aria-hidden="true"></i>
-          Agregar categorias
-        </a>
-        <a href="/ventas">
-          <i class="fa fa-star-o" aria-hidden="true"></i>
-          Ventas
-        </a>
-        <a href="javascript:void(0)">
-          <i class="fa fa-trash-o" aria-hidden="true"></i>
-          Recordatorio
-        </a>
-      </aside>
+<link rel="stylesheet" href="/static/css/sidebar.css">
 
-</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+   <!-- Sidebar  -->
+   <nav id="sidebar">
+    <div class="sidebar-header">
+        <h3>System sales</h3>
+    </div>
+
+    <ul class="list-unstyled components">
+       
+      {% block user %}
+     
+      {% endblock user %}
+
+
+        <li class="opcion active">
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Productos</a>
+           <ul class="collapse list-unstyled" id="homeSubmenu">
+                <li>
+                    <a href="/listaProducto" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Lista de productos</a>
+                </li>
+                <li>
+                    <a href="/addProducts"class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Agregar Productos</a>
+                </li>
+                <li>
+                    <a href="#" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Home 3</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+          <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Categorias</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu">
+              <li>
+                  <a href="/addCategory" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Agregar categorias </a>
+              </li>
+              <li>
+                  <a href="#" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Page 2</a>
+              </li>
+              <li>
+                  <a href="#" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Page 3</a>
+              </li>
+          </ul>
+      </li>
+        <li>
+            <a href="/ventas"  aria-expanded="false" class="opcion"  onclick="seleccionarOpcion(this);event.preventDefault();">Venta</a>
+        </li>
+        <li>
+            <a href="#" aria-expanded="false" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Detalles</a>
+        </li>
+        <li>
+            <a href="#" class="opcion" onclick="seleccionarOpcion(this);event.preventDefault();">Contact</a>
+        </li>
+    </ul>
+
+    <ul class="list-unstyled CTAs">
+        <li>
+            <a href="/logout" class="article">Cerrar sesion</a>
+        </li>
+    </ul>
+</nav>    
+
+
+<script> 
+    function seleccionarOpcion(opcion) {
+        var opciones = document.querySelectorAll('.opcion');
+        
+        for (var i = 0; i < opciones.length; i++) {
+          opciones[i].classList.remove('activa');
+        }
+        
+        opcion.classList.add('activa');
+      
+        // Agregar clase "show" al menú desplegable correspondiente
+        var submenu = opcion.parentNode.querySelector('.collapse');
+        if (submenu) {
+          submenu.classList.add('show');
+        }
+
+        var url = opcion.getAttribute('href');
+        window.location.href = url;
+      }
+      
+
+ 
+
+</script>
+
+
+
+
+
+
+
+
+
 
 
